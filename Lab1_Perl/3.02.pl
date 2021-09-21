@@ -14,16 +14,22 @@ while(scalar(@strings) > 0 && !($strings[-1] =~ /\S/)) {
 }
 
 my $counterNotEmpty = 0;
+my $counterEmpty = 0;
 foreach(@strings) {
     if ($_ =~ /\S/) {
+        if ($counterNotEmpty > 0) {
+            print ("\n");
+            if ($counterEmpty > 0) {
+                $counterEmpty = 0;
+                print ("\n");
+            }
+        }
         $_ =~ s/^(\s)+//;
-        $_ =~ s/(\s)+/$1/g;
+        $_ =~ s/(\s)+$//;
+        $_ =~ s/(\s)+/ /g;
         print($_);
         $counterNotEmpty++;
     } else {
-        if ($counterNotEmpty > 0) {
-            print($_);
-            $counterNotEmpty = 0;
-        }
+        $counterEmpty = 1;
     }
 }
