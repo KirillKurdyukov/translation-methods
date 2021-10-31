@@ -14,7 +14,13 @@ public class MathExpressionParser implements Parser {
     public Tree parse(String expression) {
         tokens = new MathExpressionLexicalAnalyzer(expression);
         nextToken();
-        return E();
+        Tree res = E();
+
+        if (token != TypeToken.END) {
+            throw new ParseException("No valid token: " + token);
+        }
+
+        return res;
     }
 
     private void nextToken() {

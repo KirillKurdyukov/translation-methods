@@ -48,7 +48,8 @@ public class MathExpressionParserTest {
                 "        123   *   ",
                 "      -228 -  + sin(34) ",
                 "-123 + -21312 + sin cos",
-                "+-123/-123 + sin-123"
+                "+-123/-123 + sin-123",
+                "( 1 + 2) sin"
         );
         for (var expr : expressions)
             Assertions.assertThrows(ParseException.class,
