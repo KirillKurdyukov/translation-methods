@@ -4,7 +4,9 @@ import graph.Tree;
 import lexica.MathExpressionLexicalAnalyzer;
 import lexica.TypeToken;
 
-public class ParserMathExpression {
+import java.util.function.Supplier;
+
+public class MathExpressionParser implements Parser {
     private MathExpressionLexicalAnalyzer tokens;
 
     private TypeToken token;
@@ -24,14 +26,15 @@ public class ParserMathExpression {
 
     private Tree E() {
         Tree res = new Tree("E");
-
         switch (token) {
+            case MINUS:
             case SIN:
             case COS:
             case NUMBER:
             case LEFT_BRACKET:
-                res.addChild(T());
-                res.addChild(ES());
+                return evaluateRule(res, this::T, this::ES);
+            case END:
+                res.addChild("eps");
                 return res;
             default:
                 throw new ParseException("No valid token: " + tokens);
@@ -40,13 +43,13 @@ public class ParserMathExpression {
 
     private Tree T() {
         Tree res = new Tree("T");
-
         switch (token) {
+            case MINUS:
             case NUMBER:
             case LEFT_BRACKET:
-                res.addChild(F());
-                res.addChild(TS());
-                return res;
+            case SIN:
+            case COS:
+                return evaluateRule(res, this::F, this::TS);
             default:
                 throw new ParseException("No valid token: " + token);
         }
@@ -54,31 +57,18 @@ public class ParserMathExpression {
 
     private Tree ES() {
         Tree res = new Tree("E'");
-
         switch (token) {
-            case ADD:
-                res.addChild("+");
-                nextToken();
-                res.addChild(T());
-                res.addChild(ES());
-                return res;
-            case SUBTRACT:
-                res.addChild("-");
-                nextToken();
-                res.addChild(T());
-                res.addChild(ES());
-                return res;
-            case END:
-                res.addChild(new Tree("eps"));
-                return res;
-            default:
-                throw new ParseException("No valid token: " + token);
+            case PLUS:
+                return evaluateRule(res, "+", this::T, this::ES);
+            case MINUS:
+                return evaluateRule(res, "-", this::T, this::ES);
         }
+        res.addChild(new Tree("eps"));
+        return res;
     }
 
     private Tree F() {
         Tree res = new Tree("F");
-
         switch (token) {
             case NUMBER:
                 res.addChild(
@@ -89,22 +79,21 @@ public class ParserMathExpression {
                 nextToken();
                 return res;
             case LEFT_BRACKET:
-                res.addChild("(");
-                nextToken();
-                res.addChild(E());
-                assert token == TypeToken.RIGHT_BRACKET;
+                evaluateRule(res, "(", this::E);
+                if (token != TypeToken.RIGHT_BRACKET) {
+                    throw new ParseException("No valid token: " + token);
+                }
                 res.addChild(")");
                 nextToken();
                 return res;
             case SIN:
-                res.addChild("sin");
-                nextToken();
-                res.addChild(F());
+                evaluateRule(res, "sin", this::F);
                 return res;
             case COS:
-                res.addChild("cos");
-                nextToken();
-                res.addChild(F());
+                evaluateRule(res, "cos", this::F);
+                return res;
+            case MINUS:
+                evaluateRule(res, "-", this::F);
                 return res;
             default:
                 throw new ParseException("No valid token: " + token);
@@ -112,26 +101,41 @@ public class ParserMathExpression {
     }
 
     private Tree TS() {
-        Tree res = new Tree("TS");
-
+        Tree res = new Tree("T'");
         switch (token) {
-            case MULTIPLY:
-                res.addChild("*");
-                nextToken();
-                res.addChild(F());
-                res.addChild(TS());
-                return res;
-            case DIVIDE:
-                res.addChild("/");
-                nextToken();
-                res.addChild(F());
-                res.addChild(TS());
-                return res;
-            case END:
-                res.addChild("eps");
-                return res;
-            default:
-                throw new ParseException("No valid token: " + token);
+            case MULTI:
+                return evaluateRule(res, "*", this::F, this::TS);
+            case DIV:
+                return evaluateRule(res, "/", this::F, this::TS);
         }
+        res.addChild("eps");
+        return res;
+    }
+
+    private Tree evaluateRule(Tree res,
+                              String name,
+                              Supplier<Tree> left,
+                              Supplier<Tree> right) {
+        res.addChild(name);
+        nextToken();
+        res.addChild(left.get());
+        res.addChild(right.get());
+        return res;
+    }
+
+    private void evaluateRule(Tree res,
+                              String name,
+                              Supplier<Tree> one) {
+        res.addChild(name);
+        nextToken();
+        res.addChild(one.get());
+    }
+
+    private Tree evaluateRule(Tree res,
+                              Supplier<Tree> left,
+                              Supplier<Tree> right) {
+        res.addChild(left.get());
+        res.addChild(right.get());
+        return res;
     }
 }

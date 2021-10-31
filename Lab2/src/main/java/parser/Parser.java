@@ -1,2 +1,7 @@
-package parser;public interface Parser {
+package parser;
+
+import graph.Tree;
+
+public interface Parser {
+    Tree parse(String expression);
 }
