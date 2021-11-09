@@ -42,7 +42,7 @@
     E -> TE'
     E'-> +TE' | -TE' | eps
     T -> FT'
-    T'-> *FT' | +FT' | eps 
+    T'-> *FT' | /FT' | eps 
     F -> sin F | cos F | n | (E)
 
 Описание:
