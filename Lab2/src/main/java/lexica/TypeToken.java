@@ -12,7 +12,8 @@ public enum TypeToken {
     COS("cos"),
     LEFT_BRACKET("\\("),
     RIGHT_BRACKET("\\)"),
-    END("\\$");
+    END("\\$"),
+    FACTORIAL("\\!");
 
     private final Pattern pattern;
 

@@ -77,33 +77,39 @@ public class MathExpressionParser implements Parser {
         Tree res = new Tree("F");
         switch (token) {
             case NUMBER:
-                res.addChild(
-                        String.valueOf(tokens
-                                .getToken()
-                                .getContent())
-                );
-                nextToken();
+                evaluateRule(res, String.valueOf(tokens
+                        .getToken()
+                        .getContent()), this::FS);
                 return res;
             case LEFT_BRACKET:
                 evaluateRule(res, "(", this::E);
                 if (token != TypeToken.RIGHT_BRACKET) {
                     throw new ParseException("No valid token: " + token);
                 }
-                res.addChild(")");
-                nextToken();
+                evaluateRule(res, ")", this::FS);
                 return res;
             case SIN:
-                evaluateRule(res, "sin", this::F);
+                evaluateRule(res, "sin", this::F, this::FS);
                 return res;
             case COS:
-                evaluateRule(res, "cos", this::F);
+                evaluateRule(res, "cos", this::F, this::FS);
                 return res;
             case MINUS:
-                evaluateRule(res, "-", this::F);
+                evaluateRule(res, "-", this::F, this::FS);
                 return res;
             default:
                 throw new ParseException("No valid token: " + token);
         }
+    }
+
+    private Tree FS() {
+        Tree res = new Tree("F'");
+        if (token == TypeToken.FACTORIAL) {
+            evaluateRule(res, "!", this::FS);
+            return res;
+        }
+        res.addChild("eps");
+        return res;
     }
 
     private Tree TS() {

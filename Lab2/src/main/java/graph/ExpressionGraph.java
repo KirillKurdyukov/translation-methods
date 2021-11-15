@@ -23,7 +23,8 @@ public class ExpressionGraph {
         dfs(tree, gv);
         gv.addln(gv.end_graph());
 
-        File file = new File("images/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + ".png");
+        File file = new File("images/" + LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + ".png");
         gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), "png"), file);
     }
 

@@ -1,19 +1,23 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import parser.MathExpressionParser;
 import parser.ParseException;
 import parser.Parser;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class MathExpressionParserTest {
 
     private static final Parser parser = new MathExpressionParser();
 
-    @Test
-    public void testCorrectExpression() {
-        List<String> expressions = List.of(
+    private static List<Arguments> correctExpression() {
+        return Stream.of(
                 "-(123)*(123-123)",
                 "-3213*(73-41)+22",
                 "sin(-13)",
@@ -28,15 +32,14 @@ public class MathExpressionParserTest {
                 "-123/-123 + sin-123",
                 "sin cos cos 2",
                 "-------123",
-                ""
-        );
-        for (var expr : expressions)
-            Assertions.assertDoesNotThrow(() -> parser.parse(expr));
+                "",
+                "123! + 123"
+        ).map(Arguments::of)
+                .collect(Collectors.toList());
     }
 
-    @Test
-    public void testErrorExpressions() {
-        List<String> expressions = List.of(
+    private static List<Arguments> errorExpressions() {
+        return Stream.of(
                 "cos cos",
                 "sin sin",
                 "- - + 12",
@@ -49,11 +52,23 @@ public class MathExpressionParserTest {
                 "      -228 -  + sin(34) ",
                 "-123 + -21312 + sin cos",
                 "+-123/-123 + sin-123",
-                "( 1 + 2) sin"
-        );
-        for (var expr : expressions)
-            Assertions.assertThrows(ParseException.class,
-                    () -> parser.parse(expr));
-
+                "( 1 + 2) sin",
+                " 123  ! 123 "
+        ).map(Arguments::of)
+                .collect(Collectors.toList());
     }
+
+    @ParameterizedTest(name = "Test {0}")
+    @MethodSource("correctExpression")
+    public void testCorrectExpression(String expr) {
+        Assertions.assertDoesNotThrow(() -> parser.parse(expr));
+    }
+
+    @ParameterizedTest(name = "Test {0}")
+    @MethodSource("errorExpressions")
+    public void testErrorExpressions(String expr) {
+        Assertions.assertThrows(ParseException.class,
+                () -> parser.parse(expr));
+    }
+
 }

@@ -19,23 +19,24 @@ public class LexicalAnalyzerTest {
             TypeToken.COS,
             TypeToken.DIV,
             TypeToken.MULTI,
+            TypeToken.FACTORIAL,
             TypeToken.END
     );
 
     @Test
     public void testTokensWithoutWhitespace() {
-        checkResult(new MathExpressionLexicalAnalyzer("sin123123+-cos/*"));
+        checkResult(new MathExpressionLexicalAnalyzer("sin123123+-cos/*!"));
     }
 
     @Test
     public void testTokensWithWhitespace() {
-        checkResult(new MathExpressionLexicalAnalyzer("   sin3  + - cos / * "));
+        checkResult(new MathExpressionLexicalAnalyzer("   sin3  + - cos / * !"));
     }
 
     @Test
     public void testTokensWithError() {
         ParseException thrown = Assertions.assertThrows(ParseException.class,
-                () -> checkResult(new MathExpressionLexicalAnalyzer("   sin123123  + - os / * ")));
+                () -> checkResult(new MathExpressionLexicalAnalyzer("   sin123123  + - os / *  ! ")));
 
         Assertions.assertEquals(thrown.getMessage(), "No valid token on pos: " + 18);
     }
