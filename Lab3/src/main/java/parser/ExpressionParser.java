@@ -20,31 +20,31 @@ public class ExpressionParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, Num=5, Var=6, WS=7, Plus=8, Minus=9, Mul=10, 
-		Div=11;
+		T__0=1, T__1=2, T__2=3, T__3=4, Num=5, Var=6, WS=7, Pow=8, Plus=9, Minus=10, 
+		Mul=11, Div=12;
 	public static final int
 		RULE_start = 0, RULE_str = 1, RULE_assign = 2, RULE_expr = 3, RULE_exprContinue = 4, 
-		RULE_term = 5, RULE_termContinue = 6, RULE_fact = 7, RULE_number = 8, 
-		RULE_variable = 9;
+		RULE_term = 5, RULE_termContinue = 6, RULE_power = 7, RULE_fact = 8, RULE_number = 9, 
+		RULE_variable = 10;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"start", "str", "assign", "expr", "exprContinue", "term", "termContinue", 
-			"fact", "number", "variable"
+			"power", "fact", "number", "variable"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'='", "';'", "'('", "')'", null, null, null, "'+'", "'-'", "'*'", 
-			"'/'"
+			null, "'='", "';'", "'('", "')'", null, null, null, "'**'", "'+'", "'-'", 
+			"'*'", "'/'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, "Num", "Var", "WS", "Plus", "Minus", "Mul", 
-			"Div"
+			null, null, null, null, null, "Num", "Var", "WS", "Pow", "Plus", "Minus", 
+			"Mul", "Div"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -121,9 +121,9 @@ public class ExpressionParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(20);
+			setState(22);
 			str(vars, res);
-			setState(21);
+			setState(23);
 			match(EOF);
 			}
 		}
@@ -160,15 +160,15 @@ public class ExpressionParser extends Parser {
 		StrContext _localctx = new StrContext(_ctx, getState(), vars, res);
 		enterRule(_localctx, 2, RULE_str);
 		try {
-			setState(27);
+			setState(29);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Var:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(23);
+				setState(25);
 				assign(vars, res);
-				setState(24);
+				setState(26);
 				str(vars, res);
 				}
 				break;
@@ -218,13 +218,13 @@ public class ExpressionParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
-			((AssignContext)_localctx).variable = variable();
-			setState(30);
-			match(T__0);
 			setState(31);
-			((AssignContext)_localctx).expr = expr(vars);
+			((AssignContext)_localctx).variable = variable();
 			setState(32);
+			match(T__0);
+			setState(33);
+			((AssignContext)_localctx).expr = expr(vars);
+			setState(34);
 			match(T__1);
 
 			        _localctx.vars.put((((AssignContext)_localctx).variable!=null?_input.getText(((AssignContext)_localctx).variable.start,((AssignContext)_localctx).variable.stop):null), ((AssignContext)_localctx).expr.val);
@@ -268,9 +268,9 @@ public class ExpressionParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
+			setState(37);
 			((ExprContext)_localctx).term = term(vars);
-			setState(36);
+			setState(38);
 			((ExprContext)_localctx).exprContinue = exprContinue(vars, ((ExprContext)_localctx).term.val);
 			 ((ExprContext)_localctx).val =  ((ExprContext)_localctx).exprContinue.val; 
 			}
@@ -313,18 +313,18 @@ public class ExpressionParser extends Parser {
 		ExprContinueContext _localctx = new ExprContinueContext(_ctx, getState(), vars, acc);
 		enterRule(_localctx, 8, RULE_exprContinue);
 		try {
-			setState(52);
+			setState(54);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Plus:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(39);
+				setState(41);
 				match(Plus);
-				setState(40);
+				setState(42);
 				((ExprContinueContext)_localctx).term = term(vars);
 				 ((ExprContinueContext)_localctx).acc =  _localctx.acc + ((ExprContinueContext)_localctx).term.val; 
-				setState(42);
+				setState(44);
 				((ExprContinueContext)_localctx).exprContinue = exprContinue(vars, _localctx.acc);
 				 ((ExprContinueContext)_localctx).val =  ((ExprContinueContext)_localctx).exprContinue.val; 
 				}
@@ -332,12 +332,12 @@ public class ExpressionParser extends Parser {
 			case Minus:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(45);
+				setState(47);
 				match(Minus);
-				setState(46);
+				setState(48);
 				((ExprContinueContext)_localctx).term = term(vars);
 				 ((ExprContinueContext)_localctx).acc =  _localctx.acc - ((ExprContinueContext)_localctx).term.val; 
-				setState(48);
+				setState(50);
 				((ExprContinueContext)_localctx).exprContinue = exprContinue(vars, _localctx.acc);
 				 ((ExprContinueContext)_localctx).val =  ((ExprContinueContext)_localctx).exprContinue.val; 
 				}
@@ -367,10 +367,10 @@ public class ExpressionParser extends Parser {
 	public static class TermContext extends ParserRuleContext {
 		public Map <String, Integer> vars;
 		public int val;
-		public FactContext fact;
+		public PowerContext power;
 		public TermContinueContext termContinue;
-		public FactContext fact() {
-			return getRuleContext(FactContext.class,0);
+		public PowerContext power() {
+			return getRuleContext(PowerContext.class,0);
 		}
 		public TermContinueContext termContinue() {
 			return getRuleContext(TermContinueContext.class,0);
@@ -389,10 +389,10 @@ public class ExpressionParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(54);
-			((TermContext)_localctx).fact = fact(vars);
-			setState(55);
-			((TermContext)_localctx).termContinue = termContinue(vars, ((TermContext)_localctx).fact.val);
+			setState(56);
+			((TermContext)_localctx).power = power(vars);
+			setState(57);
+			((TermContext)_localctx).termContinue = termContinue(vars, ((TermContext)_localctx).power.val);
 			 ((TermContext)_localctx).val =  ((TermContext)_localctx).termContinue.val; 
 			}
 		}
@@ -411,11 +411,11 @@ public class ExpressionParser extends Parser {
 		public Map <String, Integer> vars;
 		public int acc;
 		public int val;
-		public FactContext fact;
+		public PowerContext power;
 		public TermContinueContext termContinue;
 		public TerminalNode Mul() { return getToken(ExpressionParser.Mul, 0); }
-		public FactContext fact() {
-			return getRuleContext(FactContext.class,0);
+		public PowerContext power() {
+			return getRuleContext(PowerContext.class,0);
 		}
 		public TermContinueContext termContinue() {
 			return getRuleContext(TermContinueContext.class,0);
@@ -434,18 +434,18 @@ public class ExpressionParser extends Parser {
 		TermContinueContext _localctx = new TermContinueContext(_ctx, getState(), vars, acc);
 		enterRule(_localctx, 12, RULE_termContinue);
 		try {
-			setState(71);
+			setState(73);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Mul:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(58);
+				setState(60);
 				match(Mul);
-				setState(59);
-				((TermContinueContext)_localctx).fact = fact(vars);
-				 ((TermContinueContext)_localctx).acc =  _localctx.acc * ((TermContinueContext)_localctx).fact.val; 
 				setState(61);
+				((TermContinueContext)_localctx).power = power(vars);
+				 ((TermContinueContext)_localctx).acc =  _localctx.acc * ((TermContinueContext)_localctx).power.val; 
+				setState(63);
 				((TermContinueContext)_localctx).termContinue = termContinue(vars, _localctx.acc);
 				 ((TermContinueContext)_localctx).val =  ((TermContinueContext)_localctx).termContinue.val; 
 				}
@@ -453,12 +453,12 @@ public class ExpressionParser extends Parser {
 			case Div:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(64);
+				setState(66);
 				match(Div);
-				setState(65);
-				((TermContinueContext)_localctx).fact = fact(vars);
-				 ((TermContinueContext)_localctx).acc =  _localctx.acc / ((TermContinueContext)_localctx).fact.val; 
 				setState(67);
+				((TermContinueContext)_localctx).power = power(vars);
+				 ((TermContinueContext)_localctx).acc =  _localctx.acc / ((TermContinueContext)_localctx).power.val; 
+				setState(69);
 				((TermContinueContext)_localctx).termContinue = termContinue(vars, _localctx.acc);
 				 ((TermContinueContext)_localctx).val =  ((TermContinueContext)_localctx).termContinue.val; 
 				}
@@ -487,12 +487,77 @@ public class ExpressionParser extends Parser {
 		return _localctx;
 	}
 
+	public static class PowerContext extends ParserRuleContext {
+		public Map <String, Integer> vars;
+		public int val;
+		public FactContext fact;
+		public PowerContext power;
+		public FactContext fact() {
+			return getRuleContext(FactContext.class,0);
+		}
+		public TerminalNode Pow() { return getToken(ExpressionParser.Pow, 0); }
+		public PowerContext power() {
+			return getRuleContext(PowerContext.class,0);
+		}
+		public PowerContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public PowerContext(ParserRuleContext parent, int invokingState, Map <String, Integer> vars) {
+			super(parent, invokingState);
+			this.vars = vars;
+		}
+		@Override public int getRuleIndex() { return RULE_power; }
+	}
+
+	public final PowerContext power(Map <String, Integer> vars) throws RecognitionException {
+		PowerContext _localctx = new PowerContext(_ctx, getState(), vars);
+		enterRule(_localctx, 14, RULE_power);
+		try {
+			setState(83);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(75);
+				((PowerContext)_localctx).fact = fact(vars);
+				setState(76);
+				match(Pow);
+				setState(77);
+				((PowerContext)_localctx).power = power(vars);
+				 ((PowerContext)_localctx).val =  (int) Math.pow(((PowerContext)_localctx).fact.val, ((PowerContext)_localctx).power.val); 
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(80);
+				((PowerContext)_localctx).fact = fact(vars);
+				 ((PowerContext)_localctx).val =  ((PowerContext)_localctx).fact.val; 
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class FactContext extends ParserRuleContext {
 		public Map <String, Integer> vars;
 		public int val;
+		public FactContext fact;
 		public ExprContext expr;
 		public NumberContext number;
 		public VariableContext variable;
+		public TerminalNode Minus() { return getToken(ExpressionParser.Minus, 0); }
+		public FactContext fact() {
+			return getRuleContext(FactContext.class,0);
+		}
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
@@ -512,35 +577,45 @@ public class ExpressionParser extends Parser {
 
 	public final FactContext fact(Map <String, Integer> vars) throws RecognitionException {
 		FactContext _localctx = new FactContext(_ctx, getState(), vars);
-		enterRule(_localctx, 14, RULE_fact);
+		enterRule(_localctx, 16, RULE_fact);
 		try {
-			setState(84);
+			setState(100);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case T__2:
+			case Minus:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(73);
+				setState(85);
+				match(Minus);
+				setState(86);
+				((FactContext)_localctx).fact = fact(vars);
+				 ((FactContext)_localctx).val =  (-1) * ((FactContext)_localctx).fact.val; 
+				}
+				break;
+			case T__2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(89);
 				match(T__2);
-				setState(74);
+				setState(90);
 				((FactContext)_localctx).expr = expr(vars);
-				setState(75);
+				setState(91);
 				match(T__3);
 				 ((FactContext)_localctx).val =  ((FactContext)_localctx).expr.val; 
 				}
 				break;
 			case Num:
-				enterOuterAlt(_localctx, 2);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(78);
+				setState(94);
 				((FactContext)_localctx).number = number();
 				 ((FactContext)_localctx).val =  Integer.parseInt((((FactContext)_localctx).number!=null?_input.getText(((FactContext)_localctx).number.start,((FactContext)_localctx).number.stop):null)); 
 				}
 				break;
 			case Var:
-				enterOuterAlt(_localctx, 3);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(81);
+				setState(97);
 				((FactContext)_localctx).variable = variable();
 				 ((FactContext)_localctx).val =  _localctx.vars.get((((FactContext)_localctx).variable!=null?_input.getText(((FactContext)_localctx).variable.start,((FactContext)_localctx).variable.stop):null)); 
 				}
@@ -570,11 +645,11 @@ public class ExpressionParser extends Parser {
 
 	public final NumberContext number() throws RecognitionException {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_number);
+		enterRule(_localctx, 18, RULE_number);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(86);
+			setState(102);
 			match(Num);
 			}
 		}
@@ -599,11 +674,11 @@ public class ExpressionParser extends Parser {
 
 	public final VariableContext variable() throws RecognitionException {
 		VariableContext _localctx = new VariableContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_variable);
+		enterRule(_localctx, 20, RULE_variable);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(88);
+			setState(104);
 			match(Var);
 			}
 		}
@@ -619,28 +694,31 @@ public class ExpressionParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\r]\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
-		"\2\3\2\3\2\3\3\3\3\3\3\3\3\5\3\36\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5"+
-		"\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6\67\n"+
-		"\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
-		"\5\bJ\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tW\n\t\3\n\3\n"+
-		"\3\13\3\13\3\13\2\2\f\2\4\6\b\n\f\16\20\22\24\2\2\2Y\2\26\3\2\2\2\4\35"+
-		"\3\2\2\2\6\37\3\2\2\2\b%\3\2\2\2\n\66\3\2\2\2\f8\3\2\2\2\16I\3\2\2\2\20"+
-		"V\3\2\2\2\22X\3\2\2\2\24Z\3\2\2\2\26\27\5\4\3\2\27\30\7\2\2\3\30\3\3\2"+
-		"\2\2\31\32\5\6\4\2\32\33\5\4\3\2\33\36\3\2\2\2\34\36\3\2\2\2\35\31\3\2"+
-		"\2\2\35\34\3\2\2\2\36\5\3\2\2\2\37 \5\24\13\2 !\7\3\2\2!\"\5\b\5\2\"#"+
-		"\7\4\2\2#$\b\4\1\2$\7\3\2\2\2%&\5\f\7\2&\'\5\n\6\2\'(\b\5\1\2(\t\3\2\2"+
-		"\2)*\7\n\2\2*+\5\f\7\2+,\b\6\1\2,-\5\n\6\2-.\b\6\1\2.\67\3\2\2\2/\60\7"+
-		"\13\2\2\60\61\5\f\7\2\61\62\b\6\1\2\62\63\5\n\6\2\63\64\b\6\1\2\64\67"+
-		"\3\2\2\2\65\67\b\6\1\2\66)\3\2\2\2\66/\3\2\2\2\66\65\3\2\2\2\67\13\3\2"+
-		"\2\289\5\20\t\29:\5\16\b\2:;\b\7\1\2;\r\3\2\2\2<=\7\f\2\2=>\5\20\t\2>"+
-		"?\b\b\1\2?@\5\16\b\2@A\b\b\1\2AJ\3\2\2\2BC\7\r\2\2CD\5\20\t\2DE\b\b\1"+
-		"\2EF\5\16\b\2FG\b\b\1\2GJ\3\2\2\2HJ\b\b\1\2I<\3\2\2\2IB\3\2\2\2IH\3\2"+
-		"\2\2J\17\3\2\2\2KL\7\5\2\2LM\5\b\5\2MN\7\6\2\2NO\b\t\1\2OW\3\2\2\2PQ\5"+
-		"\22\n\2QR\b\t\1\2RW\3\2\2\2ST\5\24\13\2TU\b\t\1\2UW\3\2\2\2VK\3\2\2\2"+
-		"VP\3\2\2\2VS\3\2\2\2W\21\3\2\2\2XY\7\7\2\2Y\23\3\2\2\2Z[\7\b\2\2[\25\3"+
-		"\2\2\2\6\35\66IV";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16m\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\3\2\3\2\3\2\3\3\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6"+
+		"9\n\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\3\b\5\bL\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tV\n\t\3\n\3\n\3\n\3\n"+
+		"\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\ng\n\n\3\13\3\13\3\f\3"+
+		"\f\3\f\2\2\r\2\4\6\b\n\f\16\20\22\24\26\2\2\2j\2\30\3\2\2\2\4\37\3\2\2"+
+		"\2\6!\3\2\2\2\b\'\3\2\2\2\n8\3\2\2\2\f:\3\2\2\2\16K\3\2\2\2\20U\3\2\2"+
+		"\2\22f\3\2\2\2\24h\3\2\2\2\26j\3\2\2\2\30\31\5\4\3\2\31\32\7\2\2\3\32"+
+		"\3\3\2\2\2\33\34\5\6\4\2\34\35\5\4\3\2\35 \3\2\2\2\36 \3\2\2\2\37\33\3"+
+		"\2\2\2\37\36\3\2\2\2 \5\3\2\2\2!\"\5\26\f\2\"#\7\3\2\2#$\5\b\5\2$%\7\4"+
+		"\2\2%&\b\4\1\2&\7\3\2\2\2\'(\5\f\7\2()\5\n\6\2)*\b\5\1\2*\t\3\2\2\2+,"+
+		"\7\13\2\2,-\5\f\7\2-.\b\6\1\2./\5\n\6\2/\60\b\6\1\2\609\3\2\2\2\61\62"+
+		"\7\f\2\2\62\63\5\f\7\2\63\64\b\6\1\2\64\65\5\n\6\2\65\66\b\6\1\2\669\3"+
+		"\2\2\2\679\b\6\1\28+\3\2\2\28\61\3\2\2\28\67\3\2\2\29\13\3\2\2\2:;\5\20"+
+		"\t\2;<\5\16\b\2<=\b\7\1\2=\r\3\2\2\2>?\7\r\2\2?@\5\20\t\2@A\b\b\1\2AB"+
+		"\5\16\b\2BC\b\b\1\2CL\3\2\2\2DE\7\16\2\2EF\5\20\t\2FG\b\b\1\2GH\5\16\b"+
+		"\2HI\b\b\1\2IL\3\2\2\2JL\b\b\1\2K>\3\2\2\2KD\3\2\2\2KJ\3\2\2\2L\17\3\2"+
+		"\2\2MN\5\22\n\2NO\7\n\2\2OP\5\20\t\2PQ\b\t\1\2QV\3\2\2\2RS\5\22\n\2ST"+
+		"\b\t\1\2TV\3\2\2\2UM\3\2\2\2UR\3\2\2\2V\21\3\2\2\2WX\7\f\2\2XY\5\22\n"+
+		"\2YZ\b\n\1\2Zg\3\2\2\2[\\\7\5\2\2\\]\5\b\5\2]^\7\6\2\2^_\b\n\1\2_g\3\2"+
+		"\2\2`a\5\24\13\2ab\b\n\1\2bg\3\2\2\2cd\5\26\f\2de\b\n\1\2eg\3\2\2\2fW"+
+		"\3\2\2\2f[\3\2\2\2f`\3\2\2\2fc\3\2\2\2g\23\3\2\2\2hi\7\7\2\2i\25\3\2\2"+
+		"\2jk\7\b\2\2k\27\3\2\2\2\7\378KUf";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
