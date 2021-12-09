@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class LexicalAnalyzer {
 
-    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("\\+|-|\\*|/|sin|cos|[0-9]+|\\(|\\)|.");
+    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("\\*\\*|\\+|-|\\*|/|sin|cos|[0-9]+|\\(|\\)|.");
 
     private final Matcher tokenMatcher;
 

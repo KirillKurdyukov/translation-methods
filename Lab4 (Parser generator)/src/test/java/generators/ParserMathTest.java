@@ -78,7 +78,9 @@ public class ParserMathTest {
                         new Entry("80 - (46 - 14)", 48),
                         new Entry("9 / 3 * 2", 6),
                         new Entry("15 - (7 + 3) / 2", 10),
-                        new Entry("3 * (1 + 3) + 8", 20)
+                        new Entry("3 * (1 + 3) + 8", 20),
+                        new Entry("2 ** 2 ** 3", 256),
+                        new Entry("2 ** 3 ** 2", 512)
                 ).map(Arguments::of)
                 .collect(Collectors.toList());
     }

@@ -28,9 +28,9 @@ public class Parser {
                 String MUL0 = token.text();
                 res.addChild(token.text());
                 nextToken();
-                Factor factor1 = factor();
-                res.addChild(factor1);
-                res.val = acc * factor1.val;
+                Power power1 = power();
+                res.addChild(power1);
+                res.val = acc * power1.val;
                 TermS termS2 = termS(res.val);
                 res.addChild(termS2);
                 res.val = termS2.val;
@@ -42,9 +42,9 @@ public class Parser {
                 String DIV0 = token.text();
                 res.addChild(token.text());
                 nextToken();
-                Factor factor1 = factor();
-                res.addChild(factor1);
-                res.val = acc / factor1.val;
+                Power power1 = power();
+                res.addChild(power1);
+                res.val = acc / power1.val;
                 TermS termS2 = termS(res.val);
                 res.addChild(termS2);
                 res.val = termS2.val;
@@ -106,9 +106,9 @@ public class Parser {
         Term res = new Term("term");
         switch(token.typeToken()) {
             case COS, NUM, SIN, OPEN, MINUS -> {
-                Factor factor0 = factor();
-                res.addChild(factor0);
-                TermS termS1 = termS(factor0.val);
+                Power power0 = power();
+                res.addChild(power0);
+                TermS termS1 = termS(power0.val);
                 res.addChild(termS1);
                 res.val = termS1.val;
             }
@@ -128,6 +128,23 @@ public class Parser {
                 ExprS exprS1 = exprS(term0.val);
                 res.addChild(exprS1);
                 res.val = exprS1.val;
+            }
+            default ->
+                throw new ParseException("No valid token: " + token.text());
+        }
+
+        return res;
+    }
+
+    public Power power() {
+        Power res = new Power("power");
+        switch(token.typeToken()) {
+            case COS, NUM, SIN, OPEN, MINUS -> {
+                Factor factor0 = factor();
+                res.addChild(factor0);
+                PowerS powerS1 = powerS(factor0.val);
+                res.addChild(powerS1);
+                res.val = powerS1.val;
             }
             default ->
                 throw new ParseException("No valid token: " + token.text());
@@ -205,6 +222,31 @@ public class Parser {
         return res;
     }
 
+    public PowerS powerS(int acc) {
+        PowerS res = new PowerS("powerS");
+        switch(token.typeToken()) {
+            case POW -> {
+                if (token.typeToken() != TypeToken.POW) {
+                    throw new ParseException("No valid token: " + token.text());
+                }
+                String POW0 = token.text();
+                res.addChild(token.text());
+                nextToken();
+                Power power1 = power();
+                res.addChild(power1);
+                res.val = (int) Math.pow(acc, power1.val);
+            }
+            case DIV, MUL, END, CLOSE, PLUS, MINUS -> {
+                res.addChild("eps");
+                res.val = acc;
+            }
+            default ->
+                throw new ParseException("No valid token: " + token.text());
+        }
+
+        return res;
+    }
+
 
     public static class TermS extends Tree {
         public int val;
@@ -234,9 +276,23 @@ public class Parser {
         }
     }
 
+    public static class Power extends Tree {
+        public int val;
+        public Power(String node) {
+            super(node);
+        }
+    }
+
     public static class Factor extends Tree {
         public int val;
         public Factor(String node) {
+            super(node);
+        }
+    }
+
+    public static class PowerS extends Tree {
+        public int val;
+        public PowerS(String node) {
             super(node);
         }
     }

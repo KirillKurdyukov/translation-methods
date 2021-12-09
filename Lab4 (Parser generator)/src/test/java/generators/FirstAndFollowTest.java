@@ -1,6 +1,5 @@
 package generators;
 
-import meta_grammar.Grammar;
 import meta_grammar.MetaGrammarLexer;
 import meta_grammar.MetaGrammarParser;
 import org.antlr.v4.runtime.CharStream;
@@ -14,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class FirstAndFollowTest {
-    private static final String TEXT_GRAMMAR = """
+    private static final String MATH_GRAMMAR = """
             grammar math;
 
             expr () [int val] -> term() exprS(term.val) {};
@@ -37,24 +36,43 @@ public class FirstAndFollowTest {
             | MINUS NUM {$val = (-1) * Integer.parseInt(token.text());};
             """;
 
-    private static FirstAndFollow firstAndFollow;
+    private static final String PARENTHESES_GRAMMAR = """
+            grammar parentheses;
+
+            e () [] -> OPEN e() CLOSE es() {} | ε;
+            es () [] -> e() es() {} | ε;
+
+            """;
+
+    private static FirstAndFollow firstAndFollowMath;
+    private static FirstAndFollow firstAndFollowParentheses;
 
     @BeforeAll
     public static void init() {
-        CharStream charStream = CharStreams.fromString(TEXT_GRAMMAR);
+        CharStream charStreamMath = CharStreams.fromString(MATH_GRAMMAR);
 
-        MetaGrammarLexer lexer = new MetaGrammarLexer(charStream);
-        MetaGrammarParser parser = new MetaGrammarParser(new CommonTokenStream(lexer));
+        MetaGrammarLexer lexerMath = new MetaGrammarLexer(charStreamMath);
+        MetaGrammarParser parserMath = new MetaGrammarParser(new CommonTokenStream(lexerMath));
 
-        firstAndFollow = new FirstAndFollow(parser
+        firstAndFollowMath = new FirstAndFollow(parserMath
+                .metaGrammar()
+                .grammar
+        );
+
+        CharStream charStreamParentheses = CharStreams.fromString(PARENTHESES_GRAMMAR);
+
+        MetaGrammarLexer lexerParentheses = new MetaGrammarLexer(charStreamParentheses);
+        MetaGrammarParser parserParentheses = new MetaGrammarParser(new CommonTokenStream(lexerParentheses));
+
+        firstAndFollowParentheses = new FirstAndFollow(parserParentheses
                 .metaGrammar()
                 .grammar
         );
     }
 
     @Test
-    public void constructFirstTest() {
-        Map<String, Set<String>> first = firstAndFollow.getFirst();
+    public void constructFirstMathTest() {
+        Map<String, Set<String>> first = firstAndFollowMath.getFirst();
 
         Assertions.assertEquals( 5, first.size());
         Assertions.assertEquals(Set.of("SIN", "COS", "OPEN", "NUM", "MINUS"), first.get("expr"));
@@ -65,8 +83,8 @@ public class FirstAndFollowTest {
     }
 
     @Test
-    public void constructFollowTest() {
-        Map<String, Set<String>> follow = firstAndFollow.getFollow();
+    public void constructFollowMathTest() {
+        Map<String, Set<String>> follow = firstAndFollowMath.getFollow();
 
         Assertions.assertEquals( 5, follow.size());
         Assertions.assertEquals(Set.of("END", "CLOSE"), follow.get("expr"));
@@ -74,5 +92,23 @@ public class FirstAndFollowTest {
         Assertions.assertEquals(Set.of("PLUS", "MINUS", "END", "CLOSE"), follow.get("term"));
         Assertions.assertEquals(Set.of("PLUS", "MINUS", "END", "CLOSE"), follow.get("termS"));
         Assertions.assertEquals(Set.of("PLUS", "MINUS", "MUL", "DIV", "END", "CLOSE"), follow.get("factor"));
+    }
+
+    @Test
+    public void constructFirstParenthesesTest() {
+        Map<String, Set<String>> first = firstAndFollowParentheses.getFirst();
+
+        Assertions.assertEquals( 2, first.size());
+        Assertions.assertEquals(Set.of("OPEN", "ε"), first.get("e"));
+        Assertions.assertEquals(Set.of("OPEN", "ε"), first.get("es"));
+    }
+
+    @Test
+    public void constructFollowParenthesesTest() {
+        Map<String, Set<String>> follow = firstAndFollowParentheses.getFollow();
+
+        Assertions.assertEquals( 2, follow.size());
+        Assertions.assertEquals(Set.of("END", "CLOSE", "OPEN"), follow.get("e"));
+        Assertions.assertEquals(Set.of("END", "CLOSE", "OPEN"), follow.get("es"));
     }
 }

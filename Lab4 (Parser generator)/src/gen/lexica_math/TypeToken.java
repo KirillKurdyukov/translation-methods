@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 public enum TypeToken {
     END("\\$"),
+    POW("\\*\\*"),
     PLUS("\\+"),
     MINUS("-"),
     MUL("\\*"),

@@ -17,11 +17,11 @@ public class ExpressionGraph {
 
         String expression = scanner.nextLine();
 
-        Tree tree = new Parser(new LexicalAnalyzer(expression)).expr();
+        Parser.Expr tree = new Parser(new LexicalAnalyzer(expression)).expr();
         GraphViz gv = new GraphViz();
 
         gv.addln(gv.start_graph());
-        gv.addln("label=\"" + "Math expression: " + expression + "\"");
+        gv.addln("label=\"" + "Math expression: " + expression + ", val = " + tree.val + "\"");
         dfs(tree, gv);
         gv.addln(gv.end_graph());
 
